@@ -1,7 +1,7 @@
-# Autor: Kosma Skajewski
-
+from rejestr_produktow_leczniczych_parser import RejestrProduktowLeczniczychParser
 import requests
 import pymupdf
+import os
 
 def fetch_pdf_content(url, start_marker=None, end_marker=None, min_length=50):
     """
@@ -86,10 +86,18 @@ def main():
     end = "Informacje ważne przed"
     fragment_text = fetch_pdf_content(url, start, end, min_length=50)
 
-    if fragment_text:
-        print("Znaleziony fragment:\n", fragment_text)
+
+
+    # Test rejestr_produktow_leczniczych_parser.py
+
+    xml_file = "resources/rejestr_produktow_leczniczych.xml"
+
+    if os.path.exists(xml_file):
+        print("Plik XML został znaleziony.")
     else:
-        print("Nie znaleziono odpowiedniego fragmentu lub wystąpił błąd.")
+        print("Plik XML nie został znaleziony. Sprawdź ścieżkę.")
+
+    parser = RejestrProduktowLeczniczychParser(xml_file)
 
 if __name__ == "__main__":
     main()
