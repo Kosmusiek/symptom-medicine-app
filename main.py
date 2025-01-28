@@ -67,16 +67,16 @@ def fetch_pdf_content(url, start_marker=None, end_marker=None, min_length=50):
 # Przykładowe użycie funkcji
 def main():
     # Ulotka leku z Rejestru Produktów Leczniczych (rejestry.ezdrowie.gov.pl)
-    url = "https://rejestrymedyczne.ezdrowie.gov.pl/api/rpl/medicinal-products/225/leaflet"
+    url = "https://rejestrymedyczne.ezdrowie.gov.pl/api/rpl/medicinal-products/19478/leaflet"
 
-    start = "i w jakim celu się go stosuje"
-    end = "2. Informacje ważne przed"
+    start = "w jakim celu się go stosuje"
+    end = "Informacje ważne przed"
     fragment_text = fetch_pdf_content(url, start, end, min_length=50)
 
-    if fragment_text:
+    try:
         print("Znaleziony fragment:\n", fragment_text)
-    else:
-        print("Nie znaleziono wystarczająco długiego fragmentu między znacznikami.")
+    except ValueError:
+        print("Błąd wartości.")
 
 
 if __name__ == "__main__":
