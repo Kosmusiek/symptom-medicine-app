@@ -20,7 +20,7 @@ class PdfUrlAnalyzer:
         self.url = url
         self.full_text = None  # Zmienna, w której przechowamy wyodrębniony tekst PDF
 
-    def fetch_pdf_content(self):
+    def get_text(self):
         """
         Pobiera plik PDF z zadanego adresu URL, wyodrębnia cały tekst i zapamiętuje
         go w zmiennej self.full_text.
@@ -73,7 +73,7 @@ class PdfUrlAnalyzer:
         """
         # Jeśli nie pobrano jeszcze tekstu, pobierz go
         if self.full_text is None:
-            self.fetch_pdf_content()
+            self.get_text()
 
         if not self.full_text:
             # Jeśli po próbie pobrania dalej nie ma tekstu,

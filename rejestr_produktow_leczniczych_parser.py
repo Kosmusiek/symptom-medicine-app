@@ -51,7 +51,6 @@ class RejestrProduktowLeczniczychParser:
         products_data = []
         # Znajdowanie elementów <produktLeczniczy> uwzględniając namespace
         product_elements = self.root.findall("rpl:produktLeczniczy", self.ns)
-        print(f"Znaleziono {len(product_elements)} produktów leczniczych.")
 
         for elem in product_elements:
             product_info = {

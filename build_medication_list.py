@@ -6,7 +6,7 @@ import os
 from rejestr_produktow_leczniczych_parser import RejestrProduktowLeczniczychParser
 from pdf_url_analyzer import PdfUrlAnalyzer
 
-def build_medication_list(xml_file, output_csv, start_marker="w jakim celu się go stosuje", end_marker="Informacje ważne przed", min_length=50):
+def build_medication_list(xml_file, output_csv, start_marker="w jakim celu się go stosuje", end_marker="Informacje ważne przed", min_length=20):
     """
     Tworzy listę leków ('rodzajPreparatu' == 'ludzki'), pobiera z PDF (ulotki) opis między znacznikami i zapisuje w pliku CSV.
 
@@ -56,7 +56,7 @@ def build_medication_list(xml_file, output_csv, start_marker="w jakim celu się 
             fragment = analyzer.get_fragment(start_marker, end_marker, min_length)
             if fragment:
                 opis = fragment
-                print(f"[{idx}] OK: {nazwa} (ID: {product_id}) - Fragment pobrany ({len(opis)} znaków).")
+                print(f"[{idx}] {nazwa} (ID: {product_id}) - Fragment pobrany ({len(opis)} znaków).")
             else:
                 opis = ""
                 print(f"[{idx}] Brak fragmentu w ulotce. Lek: {nazwa} (ID: {product_id}).")
