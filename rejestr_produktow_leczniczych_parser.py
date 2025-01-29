@@ -72,27 +72,52 @@ class RejestrProduktowLeczniczychParser:
 
         return products_data
 
-    def get_atc_codes(self):
+    def get_url(self, product_id):
         """
-        Zwraca słownik zawierający kody ATC dla każdego produktu.
-
-        Zwraca:
-        - Słownik (dict), w którym kluczem jest ID produktu (wartość atrybutu "id" w elemencie
-          <produktLeczniczy>), a wartością jest lista kodów ATC z elementów <kodATC> (może być 1 lub więcej kodów).
+        Zwraca krotkę (ulotka_url, charakterystyka_url) dla produktu o zadanym ID.
+        Jeśli nie znajdzie produktu, zwraca ("", "").
         """
+        product_elem = self.root.find(f"rpl:produktLeczniczy[@id='{product_id}']", self.ns)
+        if product_elem is not None:
+            ulotka_url = product_elem.get("ulotka", "")
+            charakterystyka_url = product_elem.get("charakterystyka", "")
+            return (ulotka_url, charakterystyka_url)
+        return ("", "")
 
-        atc_mapping = {}
-        # Znajdowanie elementów <produktLeczniczy> uwzględniając namespace
-        product_elements = self.root.findall("rpl:produktLeczniczy", self.ns)
+    def get_info(self, product_id):
+        """
+        Zwraca słownik z atrybutami produktu o danym ID,
+        ale bez kluczy 'ulotka' i 'charakterystyka'.
+        Dodatkowo dołącza kody ATC (kodyATC: ["M05BA08", ...]).
 
-        for elem in product_elements:
-            product_id = elem.get("id", "")
-            codes = []
-            # Szkaie znacznika <kodyATC> w elemencie <produktLeczniczy>
-            kody_atc_elem = elem.find("rpl:kodyATC", self.ns)
-            if kody_atc_elem is not None:
-                for kod in kody_atc_elem.findall("rpl:kodATC", self.ns):
-                    codes.append(kod.text)
-            atc_mapping[product_id] = codes
+        Jeśli nie ma produktu, zwraca pusty słownik.
+        """
+        product_elem = self.root.find(f"rpl:produktLeczniczy[@id='{product_id}']", self.ns)
+        if product_elem is None:
+            return {}
 
-        return atc_mapping
+        # Atrybuty (bez 'ulotka' i 'charakterystyka')
+        info = {
+            "nazwaProduktu": product_elem.get("nazwaProduktu", ""),
+            "rodzajPreparatu": product_elem.get("rodzajPreparatu", ""),
+            "nazwaPowszechnieStosowana": product_elem.get("nazwaPowszechnieStosowana", ""),
+            "moc": product_elem.get("moc", ""),
+            "nazwaPostaciFarmaceutycznej": product_elem.get("nazwaPostaciFarmaceutycznej", ""),
+            "podmiotOdpowiedzialny": product_elem.get("podmiotOdpowiedzialny", ""),
+            "typProcedury": product_elem.get("typProcedury", ""),
+            "numerPozwolenia": product_elem.get("numerPozwolenia", ""),
+            "waznoscPozwolenia": product_elem.get("waznoscPozwolenia", ""),
+            "podstawaPrawna": product_elem.get("podstawaPrawna", ""),
+            "id": product_elem.get("id", "")
+        }
+
+        # Dodaj kody ATC do 'info'
+        codes = []
+        kody_atc_elem = product_elem.find("rpl:kodyATC", self.ns)
+        if kody_atc_elem is not None:
+            for kod in kody_atc_elem.findall("rpl:kodATC", self.ns):
+                codes.append(kod.text)
+        info["kodyATC"] = codes
+
+        return info
+
