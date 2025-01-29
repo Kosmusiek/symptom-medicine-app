@@ -47,10 +47,16 @@ Before running the application, make sure you have the following installed:
   symptom-medicine-app/resources/
 
 3. **Build the medicine database from XML**:
-python build_medication_list.py
+    ```bash
+    python build_medication_list.py
+
+5. **Build a Whoosh search index**:
+    ```bash
+    python build_whoosh_index.py
 
 4. **Run the application**:
-python medicine_explorer.py
+   ```bash
+   python medicine_explorer.py
 
 ## Usage
 
